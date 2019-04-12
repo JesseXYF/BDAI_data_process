@@ -8,7 +8,9 @@ Created on Thu May 17 14:46:05 2018
 此文件用于提取原始txt文本数据，并存储为嵌套型列表，生成pickle文件，方便后续再处理
 '''
 import pickle
-
+import os
+import numpy as np
+import pandas as pd
 '''====对demo数据进行处理===='''
 
 
@@ -113,8 +115,8 @@ def label_process(data):
 
 
 # 主程序
-cd = 'D:/Pydataproject/xyf_data_algorithm/Raw_Data/'
-allFileName = ['AKI_newdata', 'AKI_newdata1', 'AKI_newdata4']
+cd = 'D:\\Pydataproject\\BDAI_data_process\\data_no_rate\\AKI_data\\'
+allFileName = ['AKI_newdata1']
 # cd='/home/xzhang_sta/xyf/AKI_CDM_byYear/'
 # allFileName = ['ft_zip2010', 'ft_zip2011', 'ft_zip2012', 'ft_zip2013', 'ft_zip2014', 'ft_zip2015',
 #                'ft_zip2016', 'ft_zip2017', 'ft_zip2018']
@@ -151,9 +153,21 @@ for m in range(len(allFileName)):
         Data.append([demo, vital, lab, ccs, px, med, label])
 
     '''==========整合数据=============='''
-    # save data into a pickle file
-    cdd = 'D:/Pydataproject/xyf_data_algorithm/result/'
-    # cdd = '/home/xzhang_sta/xyf/result/'
-    file = open(cdd + fileName + '.pkl', 'wb')
-    pickle.dump(Data, file)
-    file.close()
+    cdd = "D:\\Pydataproject\\BDAI_data_process\\data_no_rate\\string_to_list\\pkl_result\\" + fileName + '\\'
+    isExists = os.path.exists(cdd)
+    if not isExists:
+        os.mkdir(cdd)
+    part_num = 0
+    start_num = 0
+    increase_num = 3
+    while start_num <= len(Data):
+        part_data = Data[int(start_num): int(start_num + increase_num)]
+        # finaldata = pd.DataFrame(part_data)
+        # finaldata.to_excel(cdd + "part_" + str(part_num)+"_list.xlsx")
+
+        finall_file = open(cdd + "part_" + str(part_num) + '_list.pkl', 'wb')
+        pickle.dump(Data, finall_file)
+        finall_file.close()
+        start_num += increase_num
+        part_num += 1
+
