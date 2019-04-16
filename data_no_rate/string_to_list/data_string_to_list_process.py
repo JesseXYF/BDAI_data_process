@@ -22,6 +22,7 @@ def demo_process(data):
     '''
     temp = data.split('_')
     result = list(temp)
+
     return result
 
 
@@ -115,7 +116,7 @@ def label_process(data):
 
 
 # 主程序
-cd = 'D:\\Pydataproject\\BDAI_data_process\\data_no_rate\\AKI_data\\'
+cd = 'D:\\BDAIproject\\BDAI_data_process\\data_no_rate\\AKI_data\\'
 allFileName = ['AKI_newdata1']
 # cd='/home/xzhang_sta/xyf/AKI_CDM_byYear/'
 # allFileName = ['ft_zip2010', 'ft_zip2011', 'ft_zip2012', 'ft_zip2013', 'ft_zip2014', 'ft_zip2015',
@@ -153,7 +154,7 @@ for m in range(len(allFileName)):
         Data.append([demo, vital, lab, ccs, px, med, label])
 
     '''==========整合数据=============='''
-    cdd = "D:\\Pydataproject\\BDAI_data_process\\data_no_rate\\string_to_list\\pkl_result\\" + fileName + '\\'
+    cdd = "D:\\BDAIproject\\BDAI_data_process\\data_no_rate\\string_to_list\\result\\" + fileName + '\\'
     isExists = os.path.exists(cdd)
     if not isExists:
         os.mkdir(cdd)
@@ -163,10 +164,10 @@ for m in range(len(allFileName)):
     while start_num <= len(Data):
         part_data = Data[int(start_num): int(start_num + increase_num)]
         # finaldata = pd.DataFrame(part_data)
-        # finaldata.to_excel(cdd + "part_" + str(part_num)+"_list.xlsx")
+        # finaldata.to_csv(cdd + "part_" + str(part_num)+"_c.csv")
 
         finall_file = open(cdd + "part_" + str(part_num) + '_list.pkl', 'wb')
-        pickle.dump(Data, finall_file)
+        pickle.dump(part_data, finall_file)
         finall_file.close()
         start_num += increase_num
         part_num += 1
