@@ -15,6 +15,7 @@ import logging
 # logging
 logging.basicConfig(filename="D:\\Pydataproject\\xyf_data_algorithm\\pre_one_day\\loggings\\Print_logging.log", level=logging.DEBUG,
                     format='%(asctime)s %(message)s', datefmt='%Y-%m-%d %I:%M:%S %p')
+# 缺失值用-1000填充
 fillNA = -1000
 
 
@@ -60,6 +61,7 @@ def sameDayVarbMap(item):
     return float(item[0]), float(item[-1])
 
 
+# 筛选出以记录AKI状态的时间为时间节点的前一天的数据，即[statusDay-1,statusDay]，代码中day = statusDay-1
 def getSameDayVariable(var, day):
     if len(var) == 0:
         return []
@@ -73,22 +75,23 @@ def getSameDayVariable(var, day):
     var = var[index]
     return var
 
-
+# 计算平均值，最近值，比例值
 def getVarientScaleMean(variable, day):
     if len(variable) == 0:
         return [fillNA, fillNA, fillNA]
 
-    variable = np.array(list(map(sameDayVarbMap, variable))[::-1])
+    variable = np.array(list(map(sameDayVarbMap, variable))[::-1])  # 将数据倒序输出
 
-    var = getSameDayVariable(variable, day)
+    var = getSameDayVariable(variable, day)  # 筛选出第day天记录的数据
 
     if len(var) > 0:
 
-        scale = np.max(var[:, 0]) - np.min(var[:, 0])
-        nearValue = var[np.argmax(var[:, -1])][0]
-        mean = np.mean(var[:, 0])
+        scale = np.max(var[:, 0]) - np.min(var[:, 0])  # 比例：最大值-最小值
+        # 最近值；即选出当天的时长中，最大时间所对应的值
+        nearValue = var[np.argmax(var[:, -1])][0]   # np.argmax()取出var中元素最大值所对应的索引。
+        mean = np.mean(var[:, 0])   # 平均值
     else:
-
+        # 如果该属性在提前一天到当天的时间段中没有记录数据，那么最近值就取提前一天(day)之前的数据
         nearValueIndex = variable[:, -1] <= day
 
         if np.sum(nearValueIndex) == 0:
@@ -106,7 +109,7 @@ def getVarientScaleMean(variable, day):
 
 
 ##--------------------vital 
-
+# 计算变化率 (最大值 - 最小值)/(最大值对应的时间-最小值对应的时间)
 def getVarientRate(variable, day):
     var = np.array(list(map(sameDayVarbMap, variable))[::-1])
     var = getSameDayVariable(var, day)
@@ -132,7 +135,7 @@ def varibaleArrange(variable, day):
     baseIN = list([fillNA, fillNA, fillNA])
     rate = fillNA
     try:
-
+        # 获取该属性的平均值，最近值，比例值
         baseIN = getVarientScaleMean(variable, day)
 
         rate = getVarientRate(variable, day)
@@ -212,7 +215,7 @@ def tobaccoNearVar(var, index, day):
 def vitalMap(vital, day):
     try:
 
-        height = np.array([varibaleArrange(vital[0], day)])  # [平均值，最近值，比例值，变化率]
+        height = np.array([varibaleArrange(vital[0], day)])
         weight = np.array([varibaleArrange(vital[1], day)])
         bmi = np.array([varibaleArrange(vital[2], day)])
         bpSys = np.array([varibaleArrange(vital[6], day)])
@@ -403,7 +406,7 @@ def reduceCompute(data, p, year):
     k = 0
     dalyData = []
     for item in data:
-        lable = np.array(list(map(lambda x: [int(x[0]), int(x[1])], item[6])))
+        lable = np.array(list(map(lambda x: [int(x[0]), int(x[1])], item[6])))  # 类型转换
         t_time = lable[:, 1] - pre_day
         for i in t_time:
             logging.info("------------------day-------------%d" % i, "----theard---%d" % p)
