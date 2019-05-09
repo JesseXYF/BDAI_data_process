@@ -167,7 +167,7 @@ def smokeElevation(smoke, day):
             return smo, elva
 
         if len(indexSet) == 1:
-            smo[0, indexSet[0]] = np.int8(1)
+            smo[0, SMOKE.index(indexSet[0])] = np.int8(1)
             return smo, elva
 
         formerVar = SMOKE.index(indexSet[-2])

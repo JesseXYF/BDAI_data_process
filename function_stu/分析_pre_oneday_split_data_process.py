@@ -13,7 +13,8 @@ import sys
 import logging
 
 # logging
-logging.basicConfig(filename="D:\\Pydataproject\\xyf_data_algorithm\\pre_one_day\\loggings\\Print_logging.log", level=logging.DEBUG,
+logging.basicConfig(filename="D:\\Pydataproject\\xyf_data_algorithm\\pre_one_day\\loggings\\Print_logging.log",
+                    level=logging.DEBUG,
                     format='%(asctime)s %(message)s', datefmt='%Y-%m-%d %I:%M:%S %p')
 # 缺失值用-1000填充
 fillNA = -1000
@@ -75,6 +76,7 @@ def getSameDayVariable(var, day):
     var = var[index]
     return var
 
+
 # 计算平均值，最近值，比例值
 def getVarientScaleMean(variable, day):
     if len(variable) == 0:
@@ -88,8 +90,8 @@ def getVarientScaleMean(variable, day):
 
         scale = np.max(var[:, 0]) - np.min(var[:, 0])  # 比例：最大值-最小值
         # 最近值；即选出当天的时长中，最大时间所对应的值
-        nearValue = var[np.argmax(var[:, -1])][0]   # np.argmax()取出var中元素最大值所对应的索引。
-        mean = np.mean(var[:, 0])   # 平均值
+        nearValue = var[np.argmax(var[:, -1])][0]  # np.argmax()取出var中元素最大值所对应的索引。
+        mean = np.mean(var[:, 0])  # 平均值
     else:
         # 如果该属性在提前一天到当天的时间段中没有记录数据，那么最近值就取提前一天(day)之前的数据
         nearValueIndex = variable[:, -1] <= day
@@ -124,7 +126,7 @@ def getVarientRate(variable, day):
     return rate
 
 
-##somke columns
+##somke columns     “0”代表在数据处理的时候，数据中出现的数值有“0”的情况，但是excel中没有给出，在这里进行定义该情况
 SMOKE = ["01", "07", "02", "08", "03", "04", "05", "06", "NI", "UN", "OT", "0"]
 TOBACCO = ["0", "01", "02", "03", "04", "06", "NI", "UN", "OT"]
 TOBACCO_TYPE = ["0", "01", "02", "03", "04", "05", "NI", "UN", "OT"]
@@ -158,7 +160,7 @@ def smokeElevation(smoke, day):
 
         return smo, fillNA
     else:
-        elva = 2
+        elva = 2  # elva是对吸烟趋势分析  -1：减轻了,0：没变,1：加重了，2：未知，-1000：缺失
         indexSet = set([])
         smo = np.zeros((1, len(SMOKE)), dtype=np.int8)
         for smokeItem in smoke:
@@ -170,14 +172,14 @@ def smokeElevation(smoke, day):
             return smo, elva
 
         if len(indexSet) == 1:
-            smo[0, indexSet[0]] = np.int8(1)
+            smo[0, SMOKE.index(indexSet[0])] = np.int8(1)
             return smo, elva
 
         formerVar = SMOKE.index(indexSet[-2])
         lasetVar = SMOKE.index(indexSet[-1])
         smo[0, lasetVar] = 1
 
-        if formerVar < 4 and lasetVar < 4:
+        if formerVar < 4 and lasetVar < 4:  # 4对应于SMOKE数组的下标，前四个是可以判断吸烟的趋势，而之后的吸烟趋势是未知的
             if formerVar == lasetVar:
                 elva = 0
             elif formerVar > lasetVar:
@@ -399,6 +401,7 @@ MEDIndex = pd.read_excel(
 
 dayScale = 50
 pre_day = 1
+
 
 def reduceCompute(data, p, year):
     savePath = "/panfs/pfs.local/work/liu/xzhang_sta/moshenglong/AKIData/AKI_" + year
