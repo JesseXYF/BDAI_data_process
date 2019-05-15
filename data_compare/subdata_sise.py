@@ -8,19 +8,21 @@ data_all = []
 k = 0
 for filename in allFileName:
     file = open("/panfs/pfs.local/work/liu/xzhang_sta/xyf/result/" + filename + ".pkl", "rb")
-    data = np.array(pickle.load(file))
+    data = list(pickle.load(file))
     # print(data)
     file.close()
     label = data[:, -1]
-
-    AKIstu = [sub_lab[-1][0] for sub_lab in label]
-
-    data_info = [filename, len(data), list(AKIstu).count(0), list(AKIstu).count(1), list(AKIstu).count(2), list(AKIstu).count(3)]
+    AKIstu = []
+    for sub_lab in label:
+        for sub_value in sub_lab:
+            AKIstu.append(sub_value[0])
+    data_info = [filename, len(AKIstu), list(AKIstu).count(0), list(AKIstu).count(1), list(AKIstu).count(2),
+                 list(AKIstu).count(3)]
     if k == 0:
         data_all = data_info
     else:
         data_all = np.vstack((data_all, data_info))
-    k += 1
+
 finaldata = pd.DataFrame(data_all)
 
-finaldata.to_excel("/panfs/pfs.local/work/liu/xzhang_sta/xyf/data_compare/result/data_size.xlsx")
+finaldata.to_excel("/panfs/pfs.local/work/liu/xzhang_sta/xyf/data_compare/result/subdata_size.xlsx")

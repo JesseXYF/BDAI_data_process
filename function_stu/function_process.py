@@ -69,6 +69,11 @@ import numpy as np
 #     print(e)
 # s1 = np.hstack((baseIN2,rate))
 # print(s1)
-s1 =np.ones([1,5])* 10 , 10
-print(type(s1))
-print(s1)
+# s1 =np.ones([1,5])* 10 , 10
+# print(type(s1))
+# print(s1)
+s1 = [[1, 2], [1, 3], [2, 4]]
+s2 = [[1,1],[2,4]]
+s3 = [[2,1]]
+s4 = np.vstack((s1,s2,s3))
+print(s4[:, 0])
